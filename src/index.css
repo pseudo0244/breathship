@@ -1,0 +1,76 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Brand Fonts - You'll need to add these font files to your project */
+@font-face {
+  font-family: 'Cormorant-Bold';
+  src: url('/fonts/Cormorant-Bold.woff2') format('woff2'),
+       url('/fonts/Cormorant-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cormorant-Regular';
+  src: url('/fonts/Cormorant-Regular.woff2') format('woff2'),
+       url('/fonts/Cormorant-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Proxima Nova-Regular';
+  src: url('/fonts/ProximaNova-Regular.woff2') format('woff2'),
+       url('/fonts/ProximaNova-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+* {
+  font-family: 'Proxima Nova-Regular', 'Inter', sans-serif;
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+.font-inter {
+  font-family: 'Inter', sans-serif;
+}
+
+.font-cormorant-bold {
+  font-family: 'Cormorant-Bold', serif;
+}
+
+.font-cormorant-regular {
+  font-family: 'Cormorant-Regular', serif;
+}
+
+.font-proxima-nova {
+  font-family: 'Proxima Nova-Regular', sans-serif;
+}
