@@ -346,12 +346,51 @@ export default function ContentManagerProduction() {
                         
                         {editingId === item.field_name ? (
                           <div className="space-y-2">
-                            <textarea
-                              value={editValue}
-                              onChange={(e) => setEditValue(e.target.value)}
-                              className="w-full p-3 border border-brand-green/20 rounded-lg focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green font-proxima-nova"
-                              rows={3}
-                            />
+                            {item.field_type === 'image' ? (
+                              <div className="space-y-3">
+                                <input
+                                  type="url"
+                                  value={editValue}
+                                  onChange={(e) => setEditValue(e.target.value)}
+                                  placeholder="Paste image URL here (e.g., https://images.unsplash.com/...)"
+                                  className="w-full p-3 border border-brand-green/20 rounded-lg focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green font-proxima-nova"
+                                />
+                                {editValue && (
+                                  <div className="mt-2">
+                                    <p className="text-sm text-brand-green/60 mb-2">Preview:</p>
+                                    <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden">
+                                      <img
+                                        src={editValue}
+                                        alt="Preview"
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          e.currentTarget.style.display = 'none'
+                                          e.currentTarget.nextElementSibling!.style.display = 'flex'
+                                        }}
+                                      />
+                                      <div className="hidden absolute inset-0 flex items-center justify-center text-gray-500">
+                                        <span>Image not found</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                                <div className="text-sm text-brand-green/60">
+                                  <p>💡 Tip: You can use:</p>
+                                  <ul className="list-disc list-inside ml-2 mt-1">
+                                    <li>Unsplash URLs (https://images.unsplash.com/...)</li>
+                                    <li>Cloudinary URLs (https://res.cloudinary.com/...)</li>
+                                    <li>Any direct image URL</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            ) : (
+                              <textarea
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                className="w-full p-3 border border-brand-green/20 rounded-lg focus:ring-2 focus:ring-brand-green/20 focus:border-brand-green font-proxima-nova"
+                                rows={3}
+                              />
+                            )}
                             <div className="flex space-x-2">
                               <Button
                                 onClick={() => handleSave(item)}
@@ -374,9 +413,35 @@ export default function ContentManagerProduction() {
                           </div>
                         ) : (
                           <div className="flex items-center justify-between">
-                            <p className="text-brand-green/90 font-proxima-nova">
-                              {item.field_value || 'No content'}
-                            </p>
+                            <div className="flex-1">
+                              {item.field_type === 'image' ? (
+                                <div className="space-y-2">
+                                  <p className="text-brand-green/90 font-proxima-nova text-sm break-all">
+                                    {item.field_value || 'No image URL'}
+                                  </p>
+                                  {item.field_value && (
+                                    <div className="relative w-32 h-20 bg-gray-100 rounded-lg overflow-hidden">
+                                      <img
+                                        src={item.field_value}
+                                        alt="Preview"
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                          e.currentTarget.style.display = 'none'
+                                          e.currentTarget.nextElementSibling!.style.display = 'flex'
+                                        }}
+                                      />
+                                      <div className="hidden absolute inset-0 flex items-center justify-center text-gray-500 text-xs">
+                                        <span>Invalid URL</span>
+                                      </div>
+                                    </div>
+                                  )}
+                                </div>
+                              ) : (
+                                <p className="text-brand-green/90 font-proxima-nova">
+                                  {item.field_value || 'No content'}
+                                </p>
+                              )}
+                            </div>
                             <div className="flex space-x-2">
                               <Button
                                 onClick={() => handleEdit(item)}

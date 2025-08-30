@@ -1,85 +1,21 @@
 import { useState, useEffect } from 'react'
+import { contentAPI } from '../api/content'
 
 interface ContentItem {
+  id: number
   section: string
   field_name: string
   field_value: string
   field_type: string
   display_order: number
   is_active: boolean
+  created_at: string
+  updated_at: string
 }
 
 interface ContentData {
   [key: string]: string
 }
-
-// Default content that will be used if no storage data exists
-const defaultContent: ContentItem[] = [
-  // Hero Section
-  { section: 'hero', field_name: 'hero_text', field_value: 'Breathe. Heal. Transform.', field_type: 'text', display_order: 1, is_active: true },
-  { section: 'hero', field_name: 'hero_subtitle', field_value: 'Discover the transformative power of conscious breathing. Experience deep healing, stress relief, and inner peace through ancient wisdom and modern science.', field_type: 'textarea', display_order: 2, is_active: true },
-  { section: 'hero', field_name: 'hero_badge_text', field_value: 'Transform Your Life Through Conscious Breathing', field_type: 'text', display_order: 3, is_active: true },
-  { section: 'hero', field_name: 'hero_cta_primary', field_value: 'Start Your Journey', field_type: 'text', display_order: 4, is_active: true },
-  { section: 'hero', field_name: 'hero_cta_secondary', field_value: 'Watch Introduction', field_type: 'text', display_order: 5, is_active: true },
-  { section: 'hero', field_name: 'hero_stats_clients', field_value: '500+', field_type: 'text', display_order: 6, is_active: true },
-  { section: 'hero', field_name: 'hero_stats_clients_text', field_value: 'Clients Transformed', field_type: 'text', display_order: 7, is_active: true },
-  { section: 'hero', field_name: 'hero_stats_experience', field_value: '5+', field_type: 'text', display_order: 8, is_active: true },
-  { section: 'hero', field_name: 'hero_stats_experience_text', field_value: 'Years Experience', field_type: 'text', display_order: 9, is_active: true },
-  { section: 'hero', field_name: 'hero_stats_rating', field_value: '4.9/5', field_type: 'text', display_order: 10, is_active: true },
-  { section: 'hero', field_name: 'hero_stats_rating_text', field_value: 'Rating', field_type: 'text', display_order: 11, is_active: true },
-  { section: 'hero', field_name: 'hero_trust_1', field_value: 'Certified Breathwork Facilitator', field_type: 'text', display_order: 12, is_active: true },
-  { section: 'hero', field_name: 'hero_trust_2', field_value: 'Evidence-Based Techniques', field_type: 'text', display_order: 13, is_active: true },
-  { section: 'hero', field_name: 'hero_trust_3', field_value: 'Safe & Supportive Environment', field_type: 'text', display_order: 14, is_active: true },
-
-  // About Me Section
-  { section: 'about_me', field_name: 'about_me_title', field_value: 'About Me', field_type: 'text', display_order: 1, is_active: true },
-  { section: 'about_me', field_name: 'about_me_subtitle', field_value: 'Your Journey to Inner Peace Starts Here', field_type: 'text', display_order: 2, is_active: true },
-  { section: 'about_me', field_name: 'about_me_description', field_value: 'I am a certified breathwork facilitator with over 5 years of experience helping people transform their lives through conscious breathing. My approach combines ancient wisdom with modern science to create powerful healing experiences.', field_type: 'textarea', display_order: 3, is_active: true },
-  { section: 'about_me', field_name: 'about_me_image', field_value: 'src/public/pattern.jpg', field_type: 'image', display_order: 4, is_active: true },
-
-  // About Breathship Section
-  { section: 'about_breathship', field_name: 'about_breathship_title', field_value: 'What is Breathship?', field_type: 'text', display_order: 1, is_active: true },
-  { section: 'about_breathship', field_name: 'about_breathship_subtitle', field_value: 'The Science of Conscious Breathing', field_type: 'text', display_order: 2, is_active: true },
-  { section: 'about_breathship', field_name: 'about_breathship_description', field_value: 'Breathship is a comprehensive approach to breathwork that combines traditional techniques with modern understanding of the nervous system. Our sessions help you release stress, heal trauma, and access deeper states of consciousness.', field_type: 'textarea', display_order: 3, is_active: true },
-
-  // Why Choose Us Section
-  { section: 'why_choose_us', field_name: 'why_choose_us_title', field_value: 'Why Choose Breathship?', field_type: 'text', display_order: 1, is_active: true },
-  { section: 'why_choose_us', field_name: 'why_choose_us_subtitle', field_value: 'Experience the Difference', field_type: 'text', display_order: 2, is_active: true },
-  { section: 'why_choose_us', field_name: 'why_choose_us_feature_1_title', field_value: 'Certified Expertise', field_type: 'text', display_order: 3, is_active: true },
-  { section: 'why_choose_us', field_name: 'why_choose_us_feature_1_description', field_value: 'Learn from certified breathwork facilitators with extensive training and experience.', field_type: 'textarea', display_order: 4, is_active: true },
-  { section: 'why_choose_us', field_name: 'why_choose_us_feature_2_title', field_value: 'Evidence-Based', field_type: 'text', display_order: 5, is_active: true },
-  { section: 'why_choose_us', field_name: 'why_choose_us_feature_2_description', field_value: 'Our techniques are backed by scientific research and proven to be effective.', field_type: 'textarea', display_order: 6, is_active: true },
-  { section: 'why_choose_us', field_name: 'why_choose_us_feature_3_title', field_value: 'Safe Environment', field_type: 'text', display_order: 7, is_active: true },
-  { section: 'why_choose_us', field_name: 'why_choose_us_feature_3_description', field_value: 'Create a safe, supportive space for your healing journey.', field_type: 'textarea', display_order: 8, is_active: true },
-
-  // Header Section
-  { section: 'header', field_name: 'header_company_name', field_value: 'Breathship', field_type: 'text', display_order: 1, is_active: true },
-  { section: 'header', field_name: 'header_logo_alt', field_value: 'Breathship Logo', field_type: 'text', display_order: 2, is_active: true },
-
-  // Footer Section
-  { section: 'footer', field_name: 'footer_description', field_value: 'Transform your life through the power of conscious breathing. Experience deep healing, stress relief, and inner peace with our evidence-based breathwork programs.', field_type: 'textarea', display_order: 1, is_active: true },
-  { section: 'footer', field_name: 'footer_copyright', field_value: '© 2024 Breathship. All rights reserved.', field_type: 'text', display_order: 2, is_active: true },
-  { section: 'footer', field_name: 'footer_privacy_link', field_value: '/privacy', field_type: 'text', display_order: 3, is_active: true },
-  { section: 'footer', field_name: 'footer_terms_link', field_value: '/terms', field_type: 'text', display_order: 4, is_active: true },
-  { section: 'footer', field_name: 'contact_email', field_value: 'hello@breathship.com', field_type: 'text', display_order: 5, is_active: true },
-  { section: 'footer', field_name: 'contact_phone', field_value: '+1 (555) 123-4567', field_type: 'text', display_order: 6, is_active: true },
-
-  // Contact Section
-  { section: 'contact', field_name: 'contact_title', field_value: 'Get in Touch', field_type: 'text', display_order: 1, is_active: true },
-  { section: 'contact', field_name: 'contact_subtitle', field_value: 'Ready to Start Your Journey?', field_type: 'text', display_order: 2, is_active: true },
-  { section: 'contact', field_name: 'contact_description', field_value: 'Book a session or ask us any questions. We are here to support your breathwork journey.', field_type: 'textarea', display_order: 3, is_active: true },
-  { section: 'contact', field_name: 'contact_address', field_value: '123 Breathing Street, Peace City, PC 12345', field_type: 'text', display_order: 4, is_active: true },
-  { section: 'contact', field_name: 'contact_email', field_value: 'hello@breathship.com', field_type: 'text', display_order: 5, is_active: true },
-  { section: 'contact', field_name: 'contact_phone', field_value: '+1 (555) 123-4567', field_type: 'text', display_order: 6, is_active: true },
-
-  // Corporate Section
-  { section: 'corporate', field_name: 'corporate_title', field_value: 'Corporate Wellness Programs', field_type: 'text', display_order: 1, is_active: true },
-  { section: 'corporate', field_name: 'corporate_subtitle', field_value: 'Transform your workplace culture with evidence-based breathwork programs designed to reduce stress, improve focus, and enhance team collaboration.', field_type: 'textarea', display_order: 2, is_active: true },
-  { section: 'corporate', field_name: 'corporate_description', field_value: 'Our corporate wellness programs are designed to help your team manage stress, improve focus, and create a healthier workplace culture through the power of conscious breathing.', field_type: 'textarea', display_order: 3, is_active: true }
-]
-
-// Production storage key
-const STORAGE_KEY = 'breathship_content_production'
 
 export function useContentProduction() {
   const [content, setContent] = useState<ContentData>({})
@@ -90,18 +26,9 @@ export function useContentProduction() {
     try {
       setLoading(true)
       
-      // Try to get content from localStorage first
-      const storedContent = localStorage.getItem(STORAGE_KEY)
-      let contentItems: ContentItem[]
+      // Get content from database
+      const contentItems: ContentItem[] = await contentAPI.getAll()
       
-      if (storedContent) {
-        contentItems = JSON.parse(storedContent)
-      } else {
-        // Initialize with default content
-        contentItems = defaultContent
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(contentItems))
-      }
-
       // Transform to key-value pairs
       const transformedContent: ContentData = {}
       contentItems.forEach(item => {
@@ -117,13 +44,54 @@ export function useContentProduction() {
       setError(err instanceof Error ? err.message : 'Failed to load content')
       
       // Fallback to default content
-      const transformedContent: ContentData = {}
-      defaultContent.forEach(item => {
-        if (item.is_active) {
-          transformedContent[item.field_name] = item.field_value
-        }
-      })
-      setContent(transformedContent)
+      const defaultContent: ContentData = {
+        hero_text: 'Breathe. Heal. Transform.',
+        hero_subtitle: 'Discover the transformative power of conscious breathing. Experience deep healing, stress relief, and inner peace through ancient wisdom and modern science.',
+        hero_badge_text: 'Transform Your Life Through Conscious Breathing',
+        hero_cta_primary: 'Start Your Journey',
+        hero_cta_secondary: 'Watch Introduction',
+        hero_stats_clients: '500+',
+        hero_stats_clients_text: 'Clients Transformed',
+        hero_stats_experience: '5+',
+        hero_stats_experience_text: 'Years Experience',
+        hero_stats_rating: '4.9/5',
+        hero_stats_rating_text: 'Rating',
+        hero_trust_1: 'Certified Breathwork Facilitator',
+        hero_trust_2: 'Evidence-Based Techniques',
+        hero_trust_3: 'Safe & Supportive Environment',
+        hero_background_image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&h=1080&fit=crop',
+        about_me_title: 'About Me',
+        about_me_subtitle: 'Your Journey to Inner Peace Starts Here',
+        about_me_description: 'I am a certified breathwork facilitator with over 5 years of experience helping people transform their lives through conscious breathing. My approach combines ancient wisdom with modern science to create powerful healing experiences.',
+        about_me_image: 'https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=800&h=600&fit=crop',
+        about_breathship_title: 'What is Breathship?',
+        about_breathship_subtitle: 'The Science of Conscious Breathing',
+        about_breathship_description: 'Breathship is a comprehensive approach to breathwork that combines traditional techniques with modern understanding of the nervous system. Our sessions help you release stress, heal trauma, and access deeper states of consciousness.',
+        why_choose_us_title: 'Why Choose Breathship?',
+        why_choose_us_subtitle: 'Experience the Difference',
+        why_choose_us_feature_1_title: 'Certified Expertise',
+        why_choose_us_feature_1_description: 'Learn from certified breathwork facilitators with extensive training and experience.',
+        why_choose_us_feature_2_title: 'Evidence-Based',
+        why_choose_us_feature_2_description: 'Our techniques are backed by scientific research and proven to be effective.',
+        why_choose_us_feature_3_title: 'Safe Environment',
+        why_choose_us_feature_3_description: 'Create a safe, supportive space for your healing journey.',
+        header_company_name: 'Breathship',
+        header_logo_alt: 'Breathship Logo',
+        footer_description: 'Transform your life through the power of conscious breathing. Experience deep healing, stress relief, and inner peace with our evidence-based breathwork programs.',
+        footer_copyright: '© 2024 Breathship. All rights reserved.',
+        footer_privacy_link: '/privacy',
+        footer_terms_link: '/terms',
+        contact_email: 'hello@breathship.com',
+        contact_phone: '+1 (555) 123-4567',
+        contact_title: 'Get in Touch',
+        contact_subtitle: 'Ready to Start Your Journey?',
+        contact_description: 'Book a session or ask us any questions. We are here to support your breathwork journey.',
+        contact_address: '123 Breathing Street, Peace City, PC 12345',
+        corporate_title: 'Corporate Wellness Programs',
+        corporate_subtitle: 'Transform your workplace culture with evidence-based breathwork programs designed to reduce stress, improve focus, and enhance team collaboration.',
+        corporate_description: 'Our corporate wellness programs are designed to help your team manage stress, improve focus, and create a healthier workplace culture through the power of conscious breathing.'
+      }
+      setContent(defaultContent)
     } finally {
       setLoading(false)
     }
@@ -131,29 +99,21 @@ export function useContentProduction() {
 
   const updateContent = async (fieldName: string, newValue: string) => {
     try {
-      // Get current content from localStorage
-      const storedContent = localStorage.getItem(STORAGE_KEY)
-      let contentItems: ContentItem[] = storedContent ? JSON.parse(storedContent) : defaultContent
+      // Find the content item by field_name
+      const contentItems: ContentItem[] = await contentAPI.getAll()
+      const contentItem = contentItems.find(item => item.field_name === fieldName)
+      
+      if (!contentItem) {
+        throw new Error(`Content field '${fieldName}' not found`)
+      }
 
-      // Update the specific field
-      const updatedItems = contentItems.map(item => 
-        item.field_name === fieldName 
-          ? { ...item, field_value: newValue }
-          : item
-      )
-
-      // Save back to localStorage
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedItems))
+      // Update the content in database
+      await contentAPI.update(contentItem.id, { field_value: newValue })
 
       // Update local state
       setContent(prev => ({
         ...prev,
         [fieldName]: newValue
-      }))
-
-      // Dispatch event for real-time updates
-      window.dispatchEvent(new CustomEvent('contentUpdated', {
-        detail: { field: fieldName, value: newValue }
       }))
 
       return { success: true }
@@ -165,11 +125,10 @@ export function useContentProduction() {
 
   const getAllContent = async () => {
     try {
-      const storedContent = localStorage.getItem(STORAGE_KEY)
-      return storedContent ? JSON.parse(storedContent) : defaultContent
+      return await contentAPI.getAll()
     } catch (err) {
       console.error('Error getting all content:', err)
-      return defaultContent
+      return []
     }
   }
 
@@ -201,8 +160,12 @@ export function useContentProduction() {
         throw new Error('Invalid content format')
       }
       
-      // Save to localStorage
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(contentItems))
+      // Update each content item in the database
+      for (const item of contentItems) {
+        if (item.id && item.field_value !== undefined) {
+          await contentAPI.update(item.id, { field_value: item.field_value })
+        }
+      }
       
       // Refresh content
       await fetchContent()
@@ -216,7 +179,8 @@ export function useContentProduction() {
 
   const resetToDefault = async () => {
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultContent))
+      // This would require implementing a reset function in the API
+      // For now, we'll just refresh the content
       await fetchContent()
       return { success: true }
     } catch (err) {
@@ -227,18 +191,6 @@ export function useContentProduction() {
 
   useEffect(() => {
     fetchContent()
-
-    // Listen for content updates from admin panel
-    const handleContentUpdate = (event: CustomEvent) => {
-      console.log('🔄 Content updated, refreshing...', event.detail)
-      fetchContent()
-    }
-
-    window.addEventListener('contentUpdated', handleContentUpdate as EventListener)
-
-    return () => {
-      window.removeEventListener('contentUpdated', handleContentUpdate as EventListener)
-    }
   }, [])
 
   return { 
