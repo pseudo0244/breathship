@@ -1,49 +1,81 @@
-// API Test Utility
-import { API_CONFIG } from '../config/api'
+// Test API functionality
+import { contentAPI } from '../api/content'
 
-export const testAPIConnections = async () => {
-  console.log('🧪 Testing API Connections...')
+export async function testContentAPI() {
+  console.log('🧪 Testing Content API...')
   
-  // Test Supabase Connection
   try {
-    const response = await fetch(`${API_CONFIG.SUPABASE.URL}/rest/v1/content?select=count`, {
-      headers: {
-        'apikey': API_CONFIG.SUPABASE.ANON_KEY,
-        'Authorization': `Bearer ${API_CONFIG.SUPABASE.ANON_KEY}`,
-      },
-    })
+    // Test 1: Get all content
+    console.log('📋 Testing getAll...')
+    const allContent = await contentAPI.getAll()
+    console.log('✅ getAll successful:', allContent.length, 'items')
     
-    if (response.ok) {
-      console.log('✅ Supabase connection successful')
-    } else {
-      console.log('❌ Supabase connection failed:', response.statusText)
+    if (allContent.length > 0) {
+      const firstItem = allContent[0]
+      console.log('📝 First item:', firstItem)
+      
+      // Test 2: Update first item
+      console.log('✏️ Testing update...')
+      const originalValue = firstItem.field_value
+      const testValue = `Test update ${Date.now()}`
+      
+      const updateResult = await contentAPI.update(firstItem.id, { 
+        field_value: testValue 
+      })
+      console.log('✅ Update successful:', updateResult)
+      
+      // Test 3: Verify update
+      console.log('🔍 Verifying update...')
+      const updatedContent = await contentAPI.getAll()
+      const updatedItem = updatedContent.find(item => item.id === firstItem.id)
+      console.log('✅ Verification:', updatedItem?.field_value === testValue)
+      
+      // Test 4: Revert change
+      console.log('↩️ Reverting change...')
+      await contentAPI.update(firstItem.id, { 
+        field_value: originalValue 
+      })
+      console.log('✅ Revert successful')
     }
+    
+    console.log('🎉 All API tests passed!')
+    return true
   } catch (error) {
-    console.log('❌ Supabase connection error:', error)
+    console.error('❌ API test failed:', error)
+    return false
   }
+}
+
+// Test specific field update
+export async function testFieldUpdate(fieldName: string, newValue: string) {
+  console.log(`🧪 Testing field update: ${fieldName} = ${newValue}`)
   
-  // Test Getform.io Connection
   try {
-    const response = await fetch(API_CONFIG.GETFORM.ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        test: true,
-        message: 'API connection test',
-        timestamp: new Date().toISOString(),
-      }),
-    })
+    // Get all content
+    const allContent = await contentAPI.getAll()
+    const targetItem = allContent.find(item => item.field_name === fieldName)
     
-    if (response.ok) {
-      console.log('✅ Getform.io connection successful')
-    } else {
-      console.log('❌ Getform.io connection failed:', response.statusText)
+    if (!targetItem) {
+      console.error(`❌ Field '${fieldName}' not found`)
+      return false
     }
+    
+    console.log('📝 Found item:', targetItem)
+    
+    // Update the field
+    const updateResult = await contentAPI.update(targetItem.id, { 
+      field_value: newValue 
+    })
+    console.log('✅ Update result:', updateResult)
+    
+    // Verify the update
+    const updatedContent = await contentAPI.getAll()
+    const updatedItem = updatedContent.find(item => item.id === targetItem.id)
+    console.log('✅ Verification:', updatedItem?.field_value === newValue)
+    
+    return true
   } catch (error) {
-    console.log('❌ Getform.io connection error:', error)
+    console.error('❌ Field update test failed:', error)
+    return false
   }
-  
-  console.log('🏁 API connection tests completed')
 }

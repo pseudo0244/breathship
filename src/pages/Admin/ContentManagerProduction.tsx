@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
-import { Save, Edit, Eye, Trash2, Plus, X, Check, RefreshCw, Download, Upload, RotateCcw, Settings } from 'lucide-react'
+import { Save, Edit, Eye, Trash2, Plus, X, Check, RefreshCw, Download, Upload, RotateCcw, Settings, Bug } from 'lucide-react'
 import Button from '../../components/UI/Button'
 import { useContentProduction } from '../../hooks/useContentProduction'
+import { testContentAPI } from '../../utils/testAPI'
 
 interface ContentItem {
   section: string
@@ -69,6 +70,7 @@ export default function ContentManagerProduction() {
       const result = await updateContent(item.field_name, editValue)
       
       if (result.success) {
+        // Update the local state correctly
         setContent(prev => ({
           ...prev,
           [item.section]: prev[item.section].map(contentItem =>
@@ -79,10 +81,11 @@ export default function ContentManagerProduction() {
         }))
         
         setEditingId(null)
+        setEditValue('')
         setMessage('Content updated successfully! Changes are live on the website.')
         setTimeout(() => setMessage(''), 5000)
       } else {
-        setMessage('Error updating content. Please try again.')
+        setMessage(`Error updating content: ${result.message || 'Please try again.'}`)
       }
     } catch (error) {
       console.error('Error updating content:', error)
@@ -177,6 +180,23 @@ export default function ContentManagerProduction() {
         console.error('Error resetting content:', error)
         setMessage('Error resetting content. Please try again.')
       }
+    }
+  }
+
+  const handleTestAPI = async () => {
+    try {
+      setMessage('Testing API...')
+      const result = await testContentAPI()
+      if (result) {
+        setMessage('API test successful! Check console for details.')
+      } else {
+        setMessage('API test failed! Check console for details.')
+      }
+      setTimeout(() => setMessage(''), 5000)
+    } catch (error) {
+      console.error('API test error:', error)
+      setMessage('API test error! Check console for details.')
+      setTimeout(() => setMessage(''), 5000)
     }
   }
 
@@ -276,6 +296,14 @@ export default function ContentManagerProduction() {
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Reset to Default</span>
+              </Button>
+              <Button
+                onClick={handleTestAPI}
+                variant="outline"
+                className="flex items-center space-x-2 text-blue-600 hover:text-blue-700"
+              >
+                <Bug className="w-4 h-4" />
+                <span>Test API</span>
               </Button>
             </div>
             <input

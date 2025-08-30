@@ -99,16 +99,22 @@ export function useContentProduction() {
 
   const updateContent = async (fieldName: string, newValue: string) => {
     try {
+      console.log(`🔄 Updating content: ${fieldName} = ${newValue}`)
+      
       // Find the content item by field_name
       const contentItems: ContentItem[] = await contentAPI.getAll()
       const contentItem = contentItems.find(item => item.field_name === fieldName)
       
       if (!contentItem) {
-        throw new Error(`Content field '${fieldName}' not found`)
+        console.error(`❌ Content field '${fieldName}' not found`)
+        return { success: false, message: `Content field '${fieldName}' not found` }
       }
 
+      console.log(`📝 Found content item:`, contentItem)
+
       // Update the content in database
-      await contentAPI.update(contentItem.id, { field_value: newValue })
+      const updateResult = await contentAPI.update(contentItem.id, { field_value: newValue })
+      console.log(`✅ Database update result:`, updateResult)
 
       // Update local state
       setContent(prev => ({
@@ -116,10 +122,12 @@ export function useContentProduction() {
         [fieldName]: newValue
       }))
 
+      console.log(`✅ Content updated successfully`)
       return { success: true }
     } catch (err) {
-      console.error('Error updating content:', err)
-      return { success: false, message: 'Failed to update content' }
+      console.error('❌ Error updating content:', err)
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+      return { success: false, message: `Failed to update content: ${errorMessage}` }
     }
   }
 
