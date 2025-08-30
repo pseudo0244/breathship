@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useForm } from 'react-hook-form'
 import { Heart, Users, TrendingUp, Building2, Calendar, Mail, Phone } from 'lucide-react'
 import { useContentProduction } from '../hooks/useContentProduction'
+import { submitCorporateInquiry } from '../api/forms'
 import Button from '../components/UI/Button'
 import Card from '../components/UI/Card'
 
@@ -13,6 +14,8 @@ interface CorporateForm {
   phone: string
   preferredDate: string
   message: string
+  companySize?: string
+  programType?: string
 }
 
 const benefits = [
@@ -45,14 +48,26 @@ export default function Corporate() {
 
   const onSubmit = async (data: CorporateForm) => {
     try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      console.log('Corporate form submitted:', data)
-      setSubmitted(true)
-      reset()
-      setTimeout(() => setSubmitted(false), 5000)
+      const result = await submitCorporateInquiry({
+        companyName: data.companyName,
+        contactName: data.contactName,
+        email: data.email,
+        phone: data.phone,
+        companySize: data.companySize || 'Not specified',
+        programType: data.programType || 'Not specified',
+        message: data.message
+      })
+      
+      if (result.success) {
+        setSubmitted(true)
+        reset()
+        setTimeout(() => setSubmitted(false), 5000)
+      } else {
+        alert('Failed to submit form. Please try again.')
+      }
     } catch (error) {
       console.error('Error submitting form:', error)
+      alert('Failed to submit form. Please try again.')
     }
   }
 
@@ -294,6 +309,41 @@ export default function Corporate() {
                     id="preferredDate"
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3D2B2A] focus:border-transparent"
                   />
+                </div>
+
+                <div>
+                  <label htmlFor="companySize" className="block text-sm font-medium text-gray-700 mb-2">
+                    Company Size
+                  </label>
+                  <select
+                    {...register('companySize')}
+                    id="companySize"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3D2B2A] focus:border-transparent"
+                  >
+                    <option value="">Select company size</option>
+                    <option value="1-10">1-10 employees</option>
+                    <option value="11-50">11-50 employees</option>
+                    <option value="51-200">51-200 employees</option>
+                    <option value="201-500">201-500 employees</option>
+                    <option value="500+">500+ employees</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="programType" className="block text-sm font-medium text-gray-700 mb-2">
+                    Program Type
+                  </label>
+                  <select
+                    {...register('programType')}
+                    id="programType"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#3D2B2A] focus:border-transparent"
+                  >
+                    <option value="">Select program type</option>
+                    <option value="One-Time Workshop">One-Time Workshop</option>
+                    <option value="Weekly Series">Weekly Series</option>
+                    <option value="Ongoing Program">Ongoing Program</option>
+                    <option value="Custom Program">Custom Program</option>
+                  </select>
                 </div>
 
                 <div className="md:col-span-2">
