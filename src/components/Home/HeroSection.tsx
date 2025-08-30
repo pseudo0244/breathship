@@ -13,7 +13,7 @@ export default function HeroSection() {
       {/* Background Image with Pattern */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-fixed"
-        style={{ backgroundImage: `url('src/public/bg.jpg')` }}
+        style={{ backgroundImage: `url('/bg.jpg')` }}
       />
       
       {/* Black Overlay for Readability */}
