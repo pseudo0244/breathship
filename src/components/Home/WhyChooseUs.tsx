@@ -1,9 +1,10 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Heart, Shield, Users, Star, Clock, Award, Sparkles } from 'lucide-react'
-import { useContentProduction } from '../../hooks/useContentProduction'
+import { useContent } from '../../hooks/useContent'
 import Card from '../UI/Card'
 import Button from '../UI/Button'
+import { Link } from 'react-router-dom'
 
 const features = [
   {
@@ -45,7 +46,7 @@ const features = [
 ]
 
 export default function WhyChooseUs() {
-  const { content } = useContentProduction()
+  const { content } = useContent()
 
   const getColorClasses = (color: string) => {
     switch (color) {
@@ -62,65 +63,7 @@ export default function WhyChooseUs() {
     <section className="py-24 bg-brand-beige relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-10">
-        <motion.img 
-          src="src/public/brownleaf.png" 
-          alt="" 
-          className="absolute top-20 right-20 w-16 h-16"
-          animate={{ 
-            y: [0, -10, 0],
-            rotate: [0, 5, 0]
-          }}
-          transition={{ 
-            duration: 8, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-        />
-        <motion.img 
-          src="src/public/greenstar.png" 
-          alt="" 
-          className="absolute bottom-20 left-20 w-12 h-12"
-          animate={{ 
-            y: [0, 12, 0],
-            rotate: [0, -3, 0]
-          }}
-          transition={{ 
-            duration: 6, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 1
-          }}
-        />
-        <motion.img 
-          src="src/public/brownsun.png" 
-          alt="" 
-          className="absolute top-1/3 left-1/4 w-20 h-20"
-          animate={{ 
-            y: [0, -8, 0],
-            rotate: [0, 4, 0]
-          }}
-          transition={{ 
-            duration: 7, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 2
-          }}
-        />
-        <motion.img 
-          src="src/public/greenleaf.png" 
-          alt="" 
-          className="absolute bottom-1/3 right-1/4 w-14 h-14"
-          animate={{ 
-            y: [0, 10, 0],
-            rotate: [0, -5, 0]
-          }}
-          transition={{ 
-            duration: 9, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 0.5
-          }}
-        />
+        {/* Decorative elements removed */}
       </div>
 
       {/* Hand-drawn style decorative elements */}
@@ -207,12 +150,16 @@ export default function WhyChooseUs() {
               {content.why_choose_cta_subtitle || 'Join our community of healing and discover the profound benefits of conscious breathing. Your journey to inner peace starts with a single breath.'}
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
-              <Button variant="brand-green" size="lg" className="shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-                {content.why_choose_cta_primary || 'Book Your First Session'}
-              </Button>
-              <Button variant="outline" size="lg" className="border-brand-green text-brand-green hover:bg-brand-green hover:text-brand-beige shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
-                {content.why_choose_cta_secondary || 'Learn More'}
-              </Button>
+              <Link to="/sessions">
+                <Button variant="brand-green" size="lg" className="shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                  {content.why_choose_cta_primary || 'Book Your First Session'}
+                </Button>
+              </Link>
+              <Link to="/blogs">
+                <Button variant="outline" size="lg" className="border-brand-green text-brand-green hover:bg-brand-green hover:text-brand-beige shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
+                  {content.why_choose_cta_secondary || 'Learn More'}
+                </Button>
+              </Link>
             </div>
             
             {/* Organic accent line */}

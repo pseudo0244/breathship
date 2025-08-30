@@ -1,19 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Mail, Phone, MapPin, Heart, Star } from 'lucide-react'
-import { useContentProduction } from '../../hooks/useContentProduction'
+import { useContent } from '../../hooks/useContent'
 
 export default function Footer() {
-  const { content } = useContentProduction()
+  const { content } = useContent()
 
   return (
     <footer className="bg-brand-green text-brand-beige relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute inset-0 opacity-10">
-        <img src="src/public/brownleaf.png" alt="" className="absolute top-10 left-10 w-16 h-16" />
-        <img src="src/public/greenleaf.png" alt="" className="absolute bottom-10 right-10 w-14 h-14" />
-        <img src="src/public/brownstar.png" alt="" className="absolute top-1/3 right-1/4 w-12 h-12" />
-        <img src="src/public/greensun.png" alt="" className="absolute bottom-1/3 left-1/4 w-20 h-20" />
+        {/* Decorative elements removed */}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative z-10">
@@ -21,7 +18,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
-              <img src="src/public/logo.png" alt={content.header_logo_alt || "Breathship Logo"} className="h-8 w-auto" />
+              
               <span className="text-xl font-cormorant-bold">
                 {content.header_company_name || "Breathship"}
               </span>

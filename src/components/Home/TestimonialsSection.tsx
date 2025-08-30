@@ -1,42 +1,41 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Quote, Star } from 'lucide-react'
-import { useTestimonials } from '../../hooks/useTestimonials'
-import { useContentProduction } from '../../hooks/useContentProduction'
+
+import { useContent } from '../../hooks/useContent'
 import Card from '../UI/Card'
 
 export default function TestimonialsSection() {
-  const { testimonials, loading } = useTestimonials()
-  const { content } = useContentProduction()
+  const { content } = useContent()
 
-  if (loading) {
-    return (
-      <section className="py-20 bg-brand-green">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <div className="animate-pulse">
-              <div className="h-12 bg-brand-beige/20 rounded-lg mb-8 max-w-2xl mx-auto"></div>
-              <div className="grid md:grid-cols-3 gap-8">
-                {[1, 2, 3].map((i) => (
-                  <div key={i} className="bg-brand-beige/10 rounded-lg p-6 h-48"></div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    )
-  }
+  // Static testimonials data
+  const testimonials = [
+    {
+      id: '1',
+      name: 'Rajeshwari Iyer',
+      location: 'Chennai',
+      text: 'Breathship\'s breathwork program has been life-changing. I struggled with burnout and emotional overwhelm for years. After just a few weeks of sessions, I feel a renewed sense of purpose and balance in my life. The techniques are simple yet incredibly powerful. I wholeheartedly recommend Breathship to anyone seeking inner peace and well-being.'
+    },
+    {
+      id: '2',
+      name: 'Ravi Sharma',
+      location: 'Bengaluru',
+      text: 'Breathship has been a transformative experience for me. The guided breathwork sessions have helped me manage my stress and anxiety levels like never before. I feel more grounded and connected to my inner self, and it\'s incredible how something as simple as conscious breathing can make such a profound impact. Thank you, Breathship, for this journey of self-discovery!'
+    },
+    {
+      id: '3',
+      name: 'Aarti Mehta',
+      location: 'Mumbai',
+      text: 'I joined Breathship during a challenging phase of my life, and it has been a beacon of hope. The sessions are deeply calming and rejuvenating. I sleep better, feel more energized, and am able to approach my day with clarity and focus. I am so grateful to the team for making such an essential practice accessible to everyone!'
+    }
+  ]
 
   return (
     <section className="py-20 bg-brand-green relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 opacity-10">
-        <img src="src/public/brownleaf.png" alt="" className="absolute top-20 left-20 w-16 h-16" />
-        <img src="src/public/greenstar.png" alt="" className="absolute bottom-20 right-20 w-12 h-12" />
-        <img src="src/public/brownsun.png" alt="" className="absolute top-1/3 right-1/4 w-20 h-20" />
-        <img src="src/public/greenleaf.png" alt="" className="absolute bottom-1/3 left-1/4 w-14 h-14" />
-      </div>
+              {/* Background decorative elements */}
+        <div className="absolute inset-0 opacity-10">
+          {/* Decorative elements removed */}
+        </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
@@ -59,7 +58,7 @@ export default function TestimonialsSection() {
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.slice(0, 6).map((testimonial, index) => (
+          {testimonials.map((testimonial, index) => (
             <motion.div
               key={testimonial.id}
               initial={{ opacity: 0, y: 20 }}
@@ -67,30 +66,30 @@ export default function TestimonialsSection() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <Card className="h-full p-6 bg-brand-beige/95 backdrop-blur-sm hover:bg-brand-beige transition-all duration-300 transform hover:-translate-y-1">
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0">
-                    <img
-                      src={testimonial.image_link}
-                      alt={testimonial.name}
-                      className="w-12 h-12 rounded-full object-cover ring-2 ring-brand-brown/20"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center mb-2">
-                      <Quote className="w-5 h-5 text-brand-brown mr-2" />
-                      <div className="flex space-x-1">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star key={star} className="w-4 h-4 text-brand-brown fill-current" />
-                        ))}
-                      </div>
+              <Card className="h-full p-8 bg-brand-beige/95 backdrop-blur-sm hover:bg-brand-beige transition-all duration-300 transform hover:-translate-y-2 hover:shadow-xl">
+                <div className="relative">
+                  {/* Quote icon at top */}
+                  <div className="absolute -top-3 -left-2">
+                    <div className="w-8 h-8 bg-brand-brown/10 rounded-full flex items-center justify-center">
+                      <Quote className="w-4 h-4 text-brand-brown" />
                     </div>
-                    <p className="text-brand-green mb-4 italic leading-relaxed font-proxima-nova">
+                  </div>
+                  
+                  {/* Testimonial text */}
+                  <div className="pt-4">
+                    <p className="text-brand-green leading-relaxed font-proxima-nova text-lg mb-6">
                       "{testimonial.text}"
                     </p>
-                    <p className="font-cormorant-regular text-brand-brown">
-                      {testimonial.name}
-                    </p>
+                    
+                    {/* Author info */}
+                    <div className="border-t border-brand-brown/20 pt-4">
+                      <p className="font-cormorant-bold text-brand-brown text-lg">
+                        {testimonial.name}
+                      </p>
+                      <p className="text-brand-green/70 font-proxima-nova text-sm">
+                        {testimonial.location}
+                      </p>
+                    </div>
                   </div>
                 </div>
               </Card>

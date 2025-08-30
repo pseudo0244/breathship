@@ -1,18 +1,19 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Play, Star, Users, Clock, Heart } from 'lucide-react'
-import { useContentProduction } from '../../hooks/useContentProduction'
+import { ArrowRight, Star, Users, Clock, Heart } from 'lucide-react'
+import { useContent } from '../../hooks/useContent'
 import Button from '../UI/Button'
+import { Link } from 'react-router-dom'
 
 export default function HeroSection() {
-  const { content } = useContentProduction()
+  const { content } = useContent()
 
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background Image with Pattern */}
       <div 
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${content.hero_background_image || 'src/public/bg.jpg'})` }}
+        className="absolute inset-0 bg-cover bg-center bg-fixed"
+        style={{ backgroundImage: `url('src/public/bg.jpg')` }}
       />
       
       {/* Black Overlay for Readability */}
@@ -20,96 +21,7 @@ export default function HeroSection() {
       
       {/* Organic Decorative Elements */}
       <div className="absolute inset-0 pointer-events-none">
-        {/* Floating leaves with natural movement */}
-        <motion.img 
-          src="src/public/brownleaf.png" 
-          alt="" 
-          className="absolute top-20 left-10 w-16 h-16 opacity-20"
-          animate={{ 
-            y: [0, -10, 0],
-            rotate: [0, 5, 0]
-          }}
-          transition={{ 
-            duration: 6, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-        />
-        <motion.img 
-          src="src/public/brownstar.png" 
-          alt="" 
-          className="absolute top-40 right-20 w-12 h-12 opacity-15"
-          animate={{ 
-            y: [0, 15, 0],
-            rotate: [0, -8, 0]
-          }}
-          transition={{ 
-            duration: 8, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 1
-          }}
-        />
-        <motion.img 
-          src="src/public/brownsun.png" 
-          alt="" 
-          className="absolute bottom-40 left-20 w-20 h-20 opacity-15"
-          animate={{ 
-            y: [0, -8, 0],
-            rotate: [0, 3, 0]
-          }}
-          transition={{ 
-            duration: 7, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 2
-          }}
-        />
-        <motion.img 
-          src="src/public/greenleaf.png" 
-          alt="" 
-          className="absolute bottom-20 right-10 w-14 h-14 opacity-20"
-          animate={{ 
-            y: [0, 12, 0],
-            rotate: [0, -5, 0]
-          }}
-          transition={{ 
-            duration: 9, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 0.5
-          }}
-        />
-        <motion.img 
-          src="src/public/greenstar.png" 
-          alt="" 
-          className="absolute top-1/3 left-1/4 w-10 h-10 opacity-15"
-          animate={{ 
-            y: [0, -6, 0],
-            rotate: [0, 4, 0]
-          }}
-          transition={{ 
-            duration: 5, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 1.5
-          }}
-        />
-        <motion.img 
-          src="src/public/greensun.png" 
-          alt="" 
-          className="absolute bottom-1/3 right-1/4 w-16 h-16 opacity-15"
-          animate={{ 
-            y: [0, 10, 0],
-            rotate: [0, -3, 0]
-          }}
-          transition={{ 
-            duration: 6.5, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 0.8
-          }}
-        />
+        {/* Decorative elements removed */}
         
         {/* Hand-drawn style decorative elements */}
         <div className="absolute top-1/4 left-1/6 w-32 h-32 border border-brand-beige/10 rounded-full opacity-30"></div>
@@ -176,23 +88,16 @@ export default function HeroSection() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            <Button 
-              variant="brand-green"
-              size="lg"
-              className="group shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-            >
-              {content.hero_cta_primary || 'Start Your Journey'}
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            
-            <Button 
-              variant="outline"
-              size="lg"
-              className="group border-brand-beige text-brand-beige hover:bg-brand-beige hover:text-brand-green shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-            >
-              <Play className="mr-2 h-5 w-5 group-hover:scale-110 transition-transform" />
-              {content.hero_cta_secondary || 'Watch Introduction'}
-            </Button>
+            <Link to="/sessions">
+              <Button 
+                variant="brand-green"
+                size="lg"
+                className="group shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              >
+                {content.hero_cta_primary || 'Begin Journey'}
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </motion.div>
 
           {/* Trust indicators with organic styling */}

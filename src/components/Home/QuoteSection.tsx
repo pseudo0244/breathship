@@ -16,35 +16,7 @@ export default function QuoteSection() {
     >
       {/* Decorative Icons with organic movement */}
       <div className="absolute inset-0 pointer-events-none opacity-10">
-        <motion.img 
-          src="src/public/brownstar.png" 
-          alt="" 
-          className="absolute top-10 left-1/4 w-12 h-12"
-          animate={{ 
-            y: [0, -8, 0],
-            rotate: [0, 5, 0]
-          }}
-          transition={{ 
-            duration: 6, 
-            repeat: Infinity, 
-            ease: "easeInOut" 
-          }}
-        />
-        <motion.img 
-          src="src/public/greensun.png" 
-          alt="" 
-          className="absolute bottom-10 right-1/4 w-16 h-16"
-          animate={{ 
-            y: [0, 12, 0],
-            rotate: [0, -3, 0]
-          }}
-          transition={{ 
-            duration: 8, 
-            repeat: Infinity, 
-            ease: "easeInOut",
-            delay: 1
-          }}
-        />
+        {/* Decorative elements removed */}
       </div>
 
       {/* Hand-drawn style decorative elements */}

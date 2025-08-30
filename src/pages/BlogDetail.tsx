@@ -2,7 +2,6 @@ import React from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
-import { format } from 'date-fns'
 import { useBlogs } from '../hooks/useBlogs'
 import LoadingSpinner from '../components/UI/LoadingSpinner'
 
@@ -10,7 +9,7 @@ export default function BlogDetail() {
   const { id } = useParams()
   const { blogs, loading } = useBlogs()
 
-  const blog = blogs.find(b => b.id === id)
+  const blog = blogs.filter(b => b.is_published === 'TRUE').find(b => b.id === id)
 
   if (loading) return <LoadingSpinner />
 
@@ -60,7 +59,7 @@ export default function BlogDetail() {
               {blog.title}
             </h1>
             <p className="text-gray-500">
-              Published on {format(new Date(blog.created_at), 'MMMM dd, yyyy')}
+              Published
             </p>
           </header>
 

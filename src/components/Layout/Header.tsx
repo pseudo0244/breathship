@@ -1,11 +1,11 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { useContentProduction } from '../../hooks/useContentProduction'
+import { useContent } from '../../hooks/useContent'
 
 export default function Header() {
   const location = useLocation()
-  const { content } = useContentProduction()
+  const { content } = useContent()
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -25,7 +25,7 @@ export default function Header() {
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <img src="src/public/logo.png" alt={content.header_logo_alt || "Breathship Logo"} className="h-8 w-auto" />
+            
             <span className="text-xl font-cormorant-bold text-brand-green">
               {content.header_company_name || "Breathship"}
             </span>

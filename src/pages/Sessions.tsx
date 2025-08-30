@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Calendar, Clock, ExternalLink, Eye } from 'lucide-react'
+import { Clock, ExternalLink, Eye, DollarSign, Calendar } from 'lucide-react'
 import { format } from 'date-fns'
 import { useSessions } from '../hooks/useSessions'
 import Card from '../components/UI/Card'
@@ -46,7 +46,7 @@ function SessionModal({ session, isOpen, onClose }: SessionModalProps) {
         <div className="p-8">
           <div className="flex items-center justify-between mb-4">
             <span className="bg-[#4D5442] text-white px-4 py-2 rounded-full text-sm font-medium">
-              {session.tag}
+              {session.session_tag}
             </span>
             <button
               onClick={onClose}
@@ -61,11 +61,15 @@ function SessionModal({ session, isOpen, onClose }: SessionModalProps) {
           <div className="flex flex-wrap gap-4 mb-6 text-gray-600">
             <div className="flex items-center">
               <Calendar className="h-5 w-5 mr-2" />
-              <span>{format(new Date(session.date), 'MMMM dd, yyyy')}</span>
+              <span>{session.date ? format(new Date(session.date), 'MMMM dd, yyyy') : 'TBD'}</span>
             </div>
             <div className="flex items-center">
               <Clock className="h-5 w-5 mr-2" />
-              <span>{session.time}</span>
+              <span>{session.time || 'TBD'}</span>
+            </div>
+            <div className="flex items-center">
+              <DollarSign className="h-5 w-5 mr-2" />
+              <span>{session.price}</span>
             </div>
           </div>
 
@@ -129,70 +133,91 @@ export default function Sessions() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {sessions.map((session, index) => (
-            <motion.div
-              key={session.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-            >
-              <Card>
-                <div className="h-48 bg-gradient-to-br from-[#3D2B2A]/10 to-[#4D5442]/10">
-                  {session.image_link ? (
-                    <img 
-                      src={session.image_link} 
-                      alt={session.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center text-6xl">🫁</div>
-                  )}
-                </div>
-                <div className="p-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="bg-[#4D5442] text-white px-3 py-1 rounded-full text-sm font-medium">
-                      {session.tag}
-                    </span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-[#3D2B2A] mb-3">{session.title}</h3>
-                  <div className="flex items-center text-gray-600 mb-2">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    <span>{format(new Date(session.date), 'MMM dd, yyyy')}</span>
-                  </div>
-                  <div className="flex items-center text-gray-600 mb-4">
-                    <Clock className="h-4 w-4 mr-2" />
-                    <span>{session.time}</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openModal(session)}
-                      className="flex-1"
-                    >
-                      <Eye className="h-4 w-4 mr-2" />
-                      View Details
-                    </Button>
-                    {session.payment_link && (
-                      <a href={session.payment_link} target="_blank" rel="noopener noreferrer">
-                        <Button size="sm">
-                          <ExternalLink className="h-4 w-4 mr-2" />
-                          Book
-                        </Button>
-                      </a>
+          {(() => {
+            const activeSessions = sessions.filter(session => {
+              const isActive = session.is_active?.toLowerCase()
+              const shouldShow = isActive === 'true' || isActive === '' || isActive === undefined
+              console.log(`🎭 Session "${session.title}": is_active="${session.is_active}" -> show=${shouldShow}`)
+              return shouldShow
+            })
+            console.log('🎭 Total sessions:', sessions.length, 'Active sessions:', activeSessions.length)
+            return activeSessions.map((session, index) => (
+              <motion.div
+                key={session.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+              >
+                <Card>
+                  <div className="h-48 bg-gradient-to-br from-[#3D2B2A]/10 to-[#4D5442]/10">
+                    {session.image_link ? (
+                      <img 
+                        src={session.image_link} 
+                        alt={session.title}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-6xl">🫁</div>
                     )}
                   </div>
-                </div>
-              </Card>
-            </motion.div>
-          ))}
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="bg-[#4D5442] text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {session.session_tag}
+                      </span>
+                      <span className="bg-[#3D2B2A] text-white px-3 py-1 rounded-full text-sm font-medium">
+                        {session.price}
+                      </span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-[#3D2B2A] mb-3">{session.title}</h3>
+                    <div className="flex items-center text-gray-600 mb-2">
+                      <Calendar className="h-4 w-4 mr-2" />
+                      <span>{session.date ? format(new Date(session.date), 'MMM dd, yyyy') : 'TBD'}</span>
+                    </div>
+                    <div className="flex items-center text-gray-600 mb-2">
+                      <Clock className="h-4 w-4 mr-2" />
+                      <span>{session.time || 'TBD'}</span>
+                    </div>
+                    <div className="flex items-center text-gray-600 mb-4">
+                      <span className="text-sm">{session.duration}</span>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => openModal(session)}
+                        className="flex-1"
+                      >
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Details
+                      </Button>
+                      {session.payment_link && (
+                        <a href={session.payment_link} target="_blank" rel="noopener noreferrer">
+                          <Button size="sm">
+                            <ExternalLink className="h-4 w-4 mr-2" />
+                            Book
+                          </Button>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            ))
+          })()}
         </div>
 
-        {sessions.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-gray-500 text-lg">No sessions scheduled yet. Check back soon!</p>
-          </div>
-        )}
+        {(() => {
+          const activeSessions = sessions.filter(session => {
+            const isActive = session.is_active?.toLowerCase()
+            return isActive === 'true' || isActive === '' || isActive === undefined
+          })
+          return activeSessions.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg">No sessions available at the moment. Check back soon!</p>
+            </div>
+          )
+        })()}
       </div>
 
       <SessionModal 

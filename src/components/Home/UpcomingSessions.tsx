@@ -1,14 +1,15 @@
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Calendar, Clock, MapPin, ArrowRight, Users, Star, Heart } from 'lucide-react'
+import { Calendar, Clock, MapPin, ArrowRight, Users, Star, Heart, DollarSign } from 'lucide-react'
 import { useSessions } from '../../hooks/useSessions'
-import { useContentProduction } from '../../hooks/useContentProduction'
+import { useContent } from '../../hooks/useContent'
 import Button from '../UI/Button'
 import Card from '../UI/Card'
+import { Link } from 'react-router-dom'
 
 export default function UpcomingSessions() {
-  const { sessions, loading } = useSessions()
-  const { content } = useContentProduction()
+  const { sessions, loading, error } = useSessions()
+  const { content } = useContent()
 
   if (loading) {
     return (
@@ -27,22 +28,35 @@ export default function UpcomingSessions() {
     )
   }
 
+  if (error) {
+    return (
+      <section className="py-20 bg-brand-beige">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <p className="text-red-500">Error loading sessions: {error}</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   const upcomingSessions = sessions
-    .filter(session => new Date(session.date) >= new Date())
+    .filter(session => {
+      const isActive = session.is_active?.toLowerCase()
+      return isActive === 'true' || isActive === '' || isActive === undefined
+    })
     .slice(0, 3)
 
   if (upcomingSessions.length === 0) return null
 
   const getSessionIcon = (tag: string) => {
     switch (tag) {
-      case 'One-on-One':
+      case 'Beginner':
         return <Heart className="w-5 h-5" />
-      case 'Group':
-        return <Users className="w-5 h-5" />
+      case 'Advanced':
+        return <Star className="w-5 h-5" />
       case 'Corporate':
         return <Users className="w-5 h-5" />
-      case 'Workshop':
-        return <Star className="w-5 h-5" />
       default:
         return <Heart className="w-5 h-5" />
     }
@@ -50,13 +64,11 @@ export default function UpcomingSessions() {
 
   const getTagColor = (tag: string) => {
     switch (tag) {
-      case 'One-on-One':
-        return 'bg-brand-brown/10 text-brand-brown border-brand-brown/20'
-      case 'Group':
+      case 'Beginner':
         return 'bg-brand-green/10 text-brand-green border-brand-green/20'
-      case 'Corporate':
+      case 'Advanced':
         return 'bg-brand-brown/10 text-brand-brown border-brand-brown/20'
-      case 'Workshop':
+      case 'Corporate':
         return 'bg-brand-green/10 text-brand-green border-brand-green/20'
       default:
         return 'bg-brand-green/10 text-brand-green border-brand-green/20'
@@ -65,13 +77,10 @@ export default function UpcomingSessions() {
 
   return (
     <section className="py-20 bg-brand-beige relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 opacity-10">
-        <img src="src/public/brownleaf.png" alt="" className="absolute top-10 right-10 w-16 h-16" />
-        <img src="src/public/greenstar.png" alt="" className="absolute bottom-10 left-10 w-12 h-12" />
-        <img src="src/public/brownsun.png" alt="" className="absolute top-1/3 left-1/4 w-20 h-20" />
-        <img src="src/public/greenleaf.png" alt="" className="absolute bottom-1/3 right-1/4 w-14 h-14" />
-      </div>
+              {/* Background decorative elements */}
+        <div className="absolute inset-0 opacity-10">
+          {/* Decorative elements removed */}
+        </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
@@ -115,10 +124,15 @@ export default function UpcomingSessions() {
                   )}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
                   <div className="absolute top-4 left-4">
-                    <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border ${getTagColor(session.tag)}`}>
-                      {getSessionIcon(session.tag)}
-                      <span className="text-sm font-proxima-nova font-medium">{session.tag}</span>
+                    <div className={`flex items-center space-x-2 px-3 py-1 rounded-full border ${getTagColor(session.session_tag)}`}>
+                      {getSessionIcon(session.session_tag)}
+                      <span className="text-sm font-proxima-nova font-medium">{session.session_tag}</span>
                     </div>
+                  </div>
+                  <div className="absolute top-4 right-4">
+                    <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-brand-brown/90 text-white">
+                      {session.price}
+                    </span>
                   </div>
                 </div>
                 
@@ -134,25 +148,48 @@ export default function UpcomingSessions() {
                   <div className="space-y-2 mb-6">
                     <div className="flex items-center text-sm text-brand-green/60 font-proxima-nova">
                       <Calendar className="w-4 h-4 mr-2 text-brand-brown" />
-                      <span className="font-medium">{session.date}</span>
+                      <span>{session.date || 'TBD'}</span>
                     </div>
                     <div className="flex items-center text-sm text-brand-green/60 font-proxima-nova">
                       <Clock className="w-4 h-4 mr-2 text-brand-brown" />
-                      <span>{session.time}</span>
+                      <span>{session.time || 'TBD'}</span>
                     </div>
                     <div className="flex items-center text-sm text-brand-green/60 font-proxima-nova">
-                      <MapPin className="w-4 h-4 mr-2 text-brand-brown" />
-                      <span>Online & In-Person</span>
+                      <span>{session.duration}</span>
                     </div>
                   </div>
                   
-                  <Button 
-                    variant="brand-green"
-                    className="w-full group"
-                  >
-                    Book Session
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+                  <div className="flex space-x-3">
+                    {session.payment_link ? (
+                      <Button 
+                        variant="brand-green"
+                        className="flex-1 group"
+                        onClick={() => window.open(session.payment_link, '_blank')}
+                      >
+                        Book Now
+                        <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </Button>
+                    ) : (
+                      <Link to="/sessions" className="flex-1">
+                        <Button 
+                          variant="brand-green"
+                          className="w-full group"
+                        >
+                          View Details
+                          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                        </Button>
+                      </Link>
+                    )}
+                    {session.payment_link && (
+                      <Button 
+                        variant="outline"
+                        className="px-4 border-brand-green text-brand-green hover:bg-brand-green hover:text-brand-beige"
+                        onClick={() => window.open(session.payment_link, '_blank')}
+                      >
+                        Pay
+                      </Button>
+                    )}
+                  </div>
                 </div>
               </Card>
             </motion.div>
@@ -166,14 +203,16 @@ export default function UpcomingSessions() {
           transition={{ duration: 0.8, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          <Button 
-            variant="outline"
-            size="lg"
-            className="inline-flex items-center space-x-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-brand-beige"
-          >
-            {content.sessions_cta || 'View All Sessions'}
-            <ArrowRight className="h-5 w-5" />
-          </Button>
+          <Link to="/sessions">
+            <Button 
+              variant="outline"
+              size="lg"
+              className="inline-flex items-center space-x-2 border-brand-green text-brand-green hover:bg-brand-green hover:text-brand-beige"
+            >
+              {content.sessions_cta || 'View All Sessions'}
+              <ArrowRight className="h-5 w-5" />
+            </Button>
+          </Link>
         </motion.div>
 
         {/* Additional info section */}

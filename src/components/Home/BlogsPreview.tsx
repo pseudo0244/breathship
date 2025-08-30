@@ -18,10 +18,7 @@ export default function BlogsPreview() {
     <section className="py-20 bg-white relative overflow-hidden">
       {/* Decorative Icons */}
       <div className="absolute inset-0 pointer-events-none opacity-10">
-        <img src="src/public/brownleaf.png" alt="" className="absolute top-20 left-10 w-12 h-12" />
-        <img src="src/public/greenstar.png" alt="" className="absolute bottom-20 right-10 w-10 h-10" />
-        <img src="src/public/brownsun.png" alt="" className="absolute top-1/3 right-1/4 w-16 h-16" />
-        <img src="src/public/greenleaf.png" alt="" className="absolute bottom-1/3 left-1/4 w-14 h-14" />
+        {/* Decorative elements removed */}
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -85,10 +82,12 @@ export default function BlogsPreview() {
           transition={{ duration: 0.8, delay: 0.4 }}
           viewport={{ once: true }}
         >
-          <Button variant="brand-green" size="lg">
-            <span>View All Blogs</span>
-            <ArrowRight className="h-5 w-5 ml-2" />
-          </Button>
+          <Link to="/blogs">
+            <Button variant="brand-green" size="lg">
+              <span>View All Blogs</span>
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+          </Link>
         </motion.div>
       </div>
     </section>

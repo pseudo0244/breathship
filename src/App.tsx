@@ -9,7 +9,7 @@ import Blogs from './pages/Blogs'
 import BlogDetail from './pages/BlogDetail'
 import Contact from './pages/Contact'
 import Corporate from './pages/Corporate'
-import Admin from './pages/Admin/Admin'
+
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -28,7 +28,6 @@ function App() {
     <Router>
       <div className="font-inter">
         <Routes>
-          <Route path="/myadmin" element={<Admin />} />
           <Route path="/*" element={
             <Layout>
               <Routes>
