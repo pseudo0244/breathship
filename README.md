@@ -38,13 +38,20 @@ npm install
 
 1. Create a new project in [Supabase](https://supabase.com)
 2. Go to the SQL Editor in your Supabase dashboard
-3. Copy and paste the entire contents of `database_schema.sql`
+3. Copy and paste the entire contents of `database_complete.sql`
 4. Execute the SQL script
 5. Note down your Supabase URL and anon key
 
-**If you get errors about existing objects:**
-- The script now includes `DROP IF EXISTS` statements to handle existing objects
-- If you still get errors, run `database_reset.sql` first to completely clear the database, then run `database_schema.sql`
+**The script handles everything automatically:**
+- ✅ **Enum constraints** - Automatically converts any existing enum constraints
+- ✅ **Existing objects** - Uses `DROP IF EXISTS` to handle conflicts
+- ✅ **Complete setup** - Creates all tables, indexes, triggers, and policies
+- ✅ **Default data** - Inserts sample content, blogs, sessions, and testimonials
+- ✅ **Verification** - Shows confirmation and record counts
+
+**For complete reset (optional):**
+- Uncomment the reset section at the top of `database_complete.sql`
+- This will completely clear the database before setup
 
 ### 4. Configure Environment Variables
 
@@ -227,9 +234,9 @@ src/
    - Check if database schema is properly set up
 
 2. **Database Schema Errors**
-   - If you get "already exists" errors, the script now handles them automatically
-   - For persistent issues, run `database_reset.sql` first, then `database_schema.sql`
-   - Make sure you're using the latest version of the SQL scripts
+   - The `database_complete.sql` script handles all common errors automatically
+   - For complete reset, uncomment the reset section at the top of the script
+   - Make sure you're using the latest version of the SQL script
 
 3. **Admin Panel Not Loading**
    - Ensure vercel.json is present for routing
