@@ -4,6 +4,9 @@
 -- Enable necessary extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+-- Clear existing data (optional - uncomment if you want to start fresh)
+-- TRUNCATE TABLE content, blogs, sessions, testimonials CASCADE;
+
 -- Content table for managing website content
 CREATE TABLE IF NOT EXISTS content (
     id SERIAL PRIMARY KEY,
@@ -73,6 +76,12 @@ BEGIN
     RETURN NEW;
 END;
 $$ language 'plpgsql';
+
+-- Drop existing triggers if they exist
+DROP TRIGGER IF EXISTS update_content_updated_at ON content;
+DROP TRIGGER IF EXISTS update_blogs_updated_at ON blogs;
+DROP TRIGGER IF EXISTS update_sessions_updated_at ON sessions;
+DROP TRIGGER IF EXISTS update_testimonials_updated_at ON testimonials;
 
 -- Create triggers for updated_at
 CREATE TRIGGER update_content_updated_at BEFORE UPDATE ON content FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -171,6 +180,16 @@ ALTER TABLE content ENABLE ROW LEVEL SECURITY;
 ALTER TABLE blogs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE testimonials ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Public read access for content" ON content;
+DROP POLICY IF EXISTS "Public read access for blogs" ON blogs;
+DROP POLICY IF EXISTS "Public read access for sessions" ON sessions;
+DROP POLICY IF EXISTS "Public read access for testimonials" ON testimonials;
+DROP POLICY IF EXISTS "Admin full access for content" ON content;
+DROP POLICY IF EXISTS "Admin full access for blogs" ON blogs;
+DROP POLICY IF EXISTS "Admin full access for sessions" ON sessions;
+DROP POLICY IF EXISTS "Admin full access for testimonials" ON testimonials;
 
 -- Create policies for public read access
 CREATE POLICY "Public read access for content" ON content FOR SELECT USING (true);

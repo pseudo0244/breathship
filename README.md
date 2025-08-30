@@ -42,6 +42,10 @@ npm install
 4. Execute the SQL script
 5. Note down your Supabase URL and anon key
 
+**If you get errors about existing objects:**
+- The script now includes `DROP IF EXISTS` statements to handle existing objects
+- If you still get errors, run `database_reset.sql` first to completely clear the database, then run `database_schema.sql`
+
 ### 4. Configure Environment Variables
 
 Create a `.env` file in the root directory:
@@ -222,15 +226,20 @@ src/
    - Verify Supabase URL and key in config
    - Check if database schema is properly set up
 
-2. **Admin Panel Not Loading**
+2. **Database Schema Errors**
+   - If you get "already exists" errors, the script now handles them automatically
+   - For persistent issues, run `database_reset.sql` first, then `database_schema.sql`
+   - Make sure you're using the latest version of the SQL scripts
+
+3. **Admin Panel Not Loading**
    - Ensure vercel.json is present for routing
    - Check browser console for errors
 
-3. **Images Not Loading**
+4. **Images Not Loading**
    - Verify image URLs are accessible
    - Check CORS settings for external images
 
-4. **Form Submission Issues**
+5. **Form Submission Issues**
    - Verify Getform.io endpoint is correct
    - Check network tab for API errors
 
