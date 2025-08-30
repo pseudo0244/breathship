@@ -31,7 +31,7 @@ export default function AdminDashboard({ onLogout }: AdminDashboardProps) {
       case 'testimonials':
         return <TestimonialsManager />
       default:
-        return <ContentManager />
+        return <ContentManagerProduction />
     }
   }
 
