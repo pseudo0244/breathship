@@ -260,3 +260,4 @@ SELECT COUNT(*) as content_count FROM content;
 SELECT COUNT(*) as sessions_count FROM sessions;
 SELECT COUNT(*) as blogs_count FROM blogs;
 SELECT COUNT(*) as testimonials_count FROM testimonials;
+-- End of code
